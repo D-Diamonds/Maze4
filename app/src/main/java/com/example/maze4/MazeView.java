@@ -11,14 +11,19 @@ import android.view.View;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-public class MazeView extends SurfaceView implements SurfaceHolder.Callback, View.OnClickListener, View.OnTouchListener {
+public class MazeView extends SurfaceView implements SurfaceHolder.Callback, View.OnClickListener, View.OnTouchListener, GestureDetector.OnGestureListener {
 
     private MazeThread thread;
     private Context context;
+    private GestureDetector gestureDetector;
+
+    private static final int SWIPE_THRESHOLD = 100;
+    private static final int SWIPE_VELOCITY_THRESHOLD = 100;
 
     public MazeView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        this.gestureDetector = new GestureDetector(this);
 
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
@@ -97,6 +102,65 @@ public class MazeView extends SurfaceView implements SurfaceHolder.Callback, Vie
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         return true;
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+        return false;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        return false;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        boolean result = false;
+        try {
+            float diffY = e2.getY() - e1.getY();
+            float diffX = e2.getX() - e1.getX();
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (diffX > 0) {
+                        this.thread.getMazeState().getPlayer().setDirection("right");
+                        System.out.println("FLING RIGHT!");
+                    } else {
+                        this.thread.getMazeState().getPlayer().setDirection("left");
+                        System.out.println("FLING LEFT!");
+                    }
+                    result = true;
+                }
+            }
+            else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                if (diffY > 0) {
+                    System.out.println("FLING DOWN!");
+                    this.thread.getMazeState().getPlayer().setDirection("down");
+                } else {
+                    System.out.println("FLING UP!");
+                    this.thread.getMazeState().getPlayer().setDirection("up");
+                }
+                result = true;
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return result;
     }
 
     @Override

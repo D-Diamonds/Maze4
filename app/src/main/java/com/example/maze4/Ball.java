@@ -13,8 +13,7 @@ public class Ball {
     private float y;
     private float dx;
     private float dy;
-    private String directionReal = "";
-    private static String direction = "";
+    private String direction = "";
 
     private final float SPEED = 5;
 
@@ -28,37 +27,29 @@ public class Ball {
         this.dy = 0;
     }
 
-    public static String getDirection() {
-        return direction;
-    }
-
-    public static void setDirection(String direction) {
-        direction = direction;
-    }
-
-    public void setDirectionReal(String directionReal) {
-        this.directionReal = directionReal;
+    public void setDirection(String direction) {
+        this.direction = direction;
         updateDirection();
     }
 
-    public String getDirectionReal() {
-        return this.directionReal;
+    public String getDirection() {
+        return this.direction;
     }
 
     public void updateDirection() {
-        if (directionReal.equals("right")) {
+        if (this.direction.equals("right")) {
             this.dx = SPEED;
             this.dy = 0;
         }
-        else if (directionReal.equals("left")) {
+        else if (this.direction.equals("left")) {
             this.dx = -SPEED;
             this.dy = 0;
         }
-        else if (directionReal.equals("up")) {
+        else if (this.direction.equals("up")) {
             this.dx = 0;
             this.dy = -SPEED;
         }
-        else if (directionReal.equals("down")) {
+        else if (this.direction.equals("down")) {
             this.dx = 0;
             this.dy = SPEED;
         }

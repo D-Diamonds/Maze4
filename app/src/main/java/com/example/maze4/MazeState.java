@@ -32,23 +32,23 @@ public class MazeState {
         this.maze = Bitmap.createScaledBitmap(maze, this.screenWidth, this.screenHeight, false);
         this.player = new Ball(this.screenWidth, this.screenHeight);
 
-        this.view.findViewById(R.id.mazeView).setOnTouchListener(new OnSwipeListener(this.context){
-            public void onSwipeRight() {
-                Ball.setDirection("right");
-            }
-
-            public void onSwipeLeft() {
-                Ball.setDirection("left");
-            }
-
-            public void onSwipeTop() {
-                Ball.setDirection("up");
-            }
-
-            public void onSwipeBottom() {
-                Ball.setDirection("down");
-            }
-        });
+//        this.view.findViewById(R.id.mazeView).setOnTouchListener(new OnSwipeListener(this.context){
+//            public void onSwipeRight() {
+//                Ball.setDirection("right");
+//            }
+//
+//            public void onSwipeLeft() {
+//                Ball.setDirection("left");
+//            }
+//
+//            public void onSwipeTop() {
+//                Ball.setDirection("up");
+//            }
+//
+//            public void onSwipeBottom() {
+//                Ball.setDirection("down");
+//            }
+//        });
 
 
         // Initializes ball to wherever the green box is
@@ -83,10 +83,11 @@ public class MazeState {
     public void reset() {
     }
 
-
+    public Ball getPlayer() {
+        return this.player;
+    }
 
     public void update(float dt) {
-        this.player.setDirectionReal(Ball.getDirection());
         this.player.update(dt);
 
 //        // collision detection
