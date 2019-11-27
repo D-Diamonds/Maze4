@@ -2,6 +2,7 @@ package com.example.maze4;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -10,7 +11,7 @@ import android.view.View;
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-public class MazeView extends SurfaceView implements SurfaceHolder.Callback, View.OnClickListener {
+public class MazeView extends SurfaceView implements SurfaceHolder.Callback, View.OnClickListener, View.OnTouchListener {
 
     private MazeThread thread;
     private Context context;
@@ -18,6 +19,7 @@ public class MazeView extends SurfaceView implements SurfaceHolder.Callback, Vie
     public MazeView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
         setFocusable(true);
@@ -45,6 +47,8 @@ public class MazeView extends SurfaceView implements SurfaceHolder.Callback, Vie
             }
         });
     }
+
+
 
     public MazeView getThis() {
         return this;
@@ -87,6 +91,11 @@ public class MazeView extends SurfaceView implements SurfaceHolder.Callback, Vie
 //        }
 //        if (action == MotionEvent.ACTION_UP)
 //            this.thread.getPongState().setDirection("null");
+        return true;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
         return true;
     }
 

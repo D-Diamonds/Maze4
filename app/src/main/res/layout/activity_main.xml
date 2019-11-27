@@ -34,16 +34,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/maze1" />
-
         <com.example.maze4.MazeView
             android:id="@+id/mazeView"
-            android:layout_width="match_parent"
+            android:layout_width="380dp"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent" />
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent"
+            android:foregroundGravity="center_horizontal"
+            android:padding="10dp" />
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
