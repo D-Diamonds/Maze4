@@ -15,7 +15,7 @@ public class Ball {
     private float dy;
     private String direction = "";
 
-    private final float SPEED = 5;
+    private final float SPEED = 2;
 
     public Ball(float screenWidth, float screenHeight) {
         this.screenWidth = screenWidth;
