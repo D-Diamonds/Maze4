@@ -75,13 +75,13 @@ public class MazeState {
     public void update(float dt) {
         this.player.update(dt);
         if (this.player.getX() < 0)
-            this.player.setPosition(this.player.getRadius(), this.player.getY());
+            this.player.setPosition(2 * this.player.getRadius(), this.player.getY());
         if (this.player.getX() > this.screenWidth)
-            this.player.setPosition(this.screenWidth - this.player.getRadius(), this.player.getY());
+            this.player.setPosition(this.screenWidth - 2 * this.player.getRadius(), this.player.getY());
         if (this.player.getY() < 0)
-            this.player.setPosition(this.player.getX(), this.player.getRadius());
+            this.player.setPosition(this.player.getX(), 2 * this.player.getRadius());
         if (this.player.getY() > this.screenHeight)
-            this.player.setPosition(this.player.getX(), this.screenHeight - this.player.getRadius());
+            this.player.setPosition(this.player.getX(), this.screenHeight - 2 * this.player.getRadius());
 
         // collision detection
         if (this.player.getX() > 0 && this.player.getX() < this.screenWidth && this.player.getY() > 0 && this.player.getY() < this.screenHeight) {
