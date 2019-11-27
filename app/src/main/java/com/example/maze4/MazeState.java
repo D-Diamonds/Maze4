@@ -87,30 +87,51 @@ public class MazeState {
         return this.player;
     }
 
+    public void win() {
+        System.out.println("WIN!");
+    }
+
     public void update(float dt) {
         this.player.update(dt);
 
-//        // collision detection
-//        if (this.player.getDirection().equals("right") ) {
-//            int pixel = this.maze.getPixel((int) (this.player.getX() + this.player.getRadius()), (int) this.player.getY());
-//            if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
-//                this.player.setPosition(this.player.getX() - this.player.getRadius(), this.player.getY());
-//        }
-//        else if (this.player.getDirection().equals("left") ) {
-//            int pixel = this.maze.getPixel((int) (this.player.getX() - this.player.getRadius()), (int) this.player.getY());
-//            if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
-//                this.player.setPosition(this.player.getX() + this.player.getRadius(), this.player.getY());
-//        }
-//        else if (this.player.getDirection().equals("up") ) {
-//            int pixel = this.maze.getPixel((int) this.player.getX(), (int) (this.player.getY()+ this.player.getRadius()));
-//            if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
-//                this.player.setPosition(this.player.getX(), this.player.getY() - this.player.getRadius());
-//        }
-//        else if (this.player.getDirection().equals("down") ) {
-//            int pixel = this.maze.getPixel((int) this.player.getX(), (int) (this.player.getY() - + this.player.getRadius()));
-//            if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
-//                this.player.setPosition(this.player.getX(), this.player.getY() + this.player.getRadius());
-//        }
+        // collision detection
+        if (this.player.getDirection().equals("right") ) {
+            int pixel = this.maze.getPixel((int) (this.player.getX() + this.player.getRadius()), (int) this.player.getY());
+            // with wall
+            if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
+                this.player.setPosition(this.player.getX() - this.player.getRadius(), this.player.getY());
+            // with goal
+            if (Color.red(pixel) == 255 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
+                win();
+
+        }
+        else if (this.player.getDirection().equals("left") ) {
+            int pixel = this.maze.getPixel((int) (this.player.getX() - this.player.getRadius()), (int) this.player.getY());
+            // with wall
+            if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
+                this.player.setPosition(this.player.getX() + this.player.getRadius(), this.player.getY());
+            // with goal
+            if (Color.red(pixel) == 255 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
+                win();
+        }
+        else if (this.player.getDirection().equals("up") ) {
+            int pixel = this.maze.getPixel((int) this.player.getX(), (int) (this.player.getY()+ this.player.getRadius()));
+            // with wall
+            if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
+                this.player.setPosition(this.player.getX(), this.player.getY() - this.player.getRadius());
+            // with goal
+            if (Color.red(pixel) == 255 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
+                win();
+        }
+        else if (this.player.getDirection().equals("down") ) {
+            int pixel = this.maze.getPixel((int) this.player.getX(), (int) (this.player.getY() - + this.player.getRadius()));
+            // with wall
+            if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
+                this.player.setPosition(this.player.getX(), this.player.getY() + this.player.getRadius());
+            // with goal
+            if (Color.red(pixel) == 255 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
+                win();
+        }
 
     }
 
