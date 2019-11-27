@@ -24,6 +24,7 @@ public class MazeView extends SurfaceView implements SurfaceHolder.Callback, Vie
         super(context, attrs);
         this.context = context;
         this.gestureDetector = new GestureDetector(this);
+        this.setOnTouchListener(this);
 
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
