@@ -95,7 +95,7 @@ public class MazeView extends SurfaceView implements SurfaceHolder.Callback, Vie
 
     @Override
     public boolean onDown(MotionEvent e) {
-        return false;
+        return true;
     }
 
     @Override
@@ -105,12 +105,12 @@ public class MazeView extends SurfaceView implements SurfaceHolder.Callback, Vie
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        return false;
+        return true;
     }
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-        return false;
+        return true;
     }
 
     @Override
@@ -120,6 +120,7 @@ public class MazeView extends SurfaceView implements SurfaceHolder.Callback, Vie
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+        System.out.println("TRYING TO FLING");
         boolean result = false;
         try {
             float diffY = e2.getY() - e1.getY();
