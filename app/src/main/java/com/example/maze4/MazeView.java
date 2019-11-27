@@ -8,14 +8,16 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import androidx.core.view.GestureDetectorCompat;
+
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-public class MazeView extends SurfaceView implements SurfaceHolder.Callback, View.OnClickListener, View.OnTouchListener, GestureDetector.OnGestureListener {
+public class MazeView extends SurfaceView implements SurfaceHolder.Callback, View.OnClickListener, GestureDetector.OnGestureListener {
 
     private MazeThread thread;
     private Context context;
-    private GestureDetector gestureDetector;
+    private GestureDetectorCompat gestureDetector;
 
     private static final int SWIPE_THRESHOLD = 100;
     private static final int SWIPE_VELOCITY_THRESHOLD = 100;
@@ -23,8 +25,7 @@ public class MazeView extends SurfaceView implements SurfaceHolder.Callback, Vie
     public MazeView(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
-        this.gestureDetector = new GestureDetector(this);
-        this.setOnTouchListener(this);
+        this.gestureDetector = new GestureDetectorCompat(this.context, this);
 
         SurfaceHolder holder = getHolder();
         holder.addCallback(this);
@@ -87,22 +88,9 @@ public class MazeView extends SurfaceView implements SurfaceHolder.Callback, Vie
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-//        int action = event.getAction();
-//        if (action == MotionEvent.ACTION_DOWN) {
-//            if (event.getY() >= getHeight() * .5)
-//                this.thread.getPongState().setDirection("down");
-//            else if (event.getY() < getHeight() * .5)
-//                this.thread.getPongState().setDirection("up");
-//
-//        }
-//        if (action == MotionEvent.ACTION_UP)
-//            this.thread.getPongState().setDirection("null");
-        return true;
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        return true;
+        if (this.gestureDetector.onTouchEvent(event))
+            return true;
+        return super.onTouchEvent(event);
     }
 
     @Override
