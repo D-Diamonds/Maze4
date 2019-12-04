@@ -53,16 +53,20 @@ public class Ball {
             this.dx = 0;
             this.dy = SPEED;
         }
+        else {
+            this.dx = 0;
+            this.dy = 0;
+        }
 
-        System.out.println("Dx: " + this.dx);
-        System.out.println("Dy: " + this.dy);
+        //System.out.println("Dx: " + this.dx);
+        //System.out.println("Dy: " + this.dy);
 
     }
 
     public void setPosition(float x, float y) {
         this.x = x;
         this.y = y;
-        System.out.println("Ball placed at (" + this.x + ", " + this.y + ")");
+        //System.out.println("Ball placed at (" + this.x + ", " + this.y + ")");
     }
 
     public float getX() {

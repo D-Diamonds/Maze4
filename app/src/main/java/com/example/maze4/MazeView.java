@@ -1,23 +1,31 @@
 package com.example.maze4;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.core.view.GestureDetectorCompat;
 
 import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 
-public class MazeView extends SurfaceView implements SurfaceHolder.Callback, View.OnClickListener, GestureDetector.OnGestureListener {
+public class MazeView extends SurfaceView implements SurfaceHolder.Callback, GestureDetector.OnGestureListener {
 
     private MazeThread thread;
     private Context context;
     private GestureDetectorCompat gestureDetector;
+    private int currentMaze = 0;
+
+    private final int[] mazes = {R.drawable.maze1, R.drawable.maze2};
 
     private static final int SWIPE_THRESHOLD = 100;
     private static final int SWIPE_VELOCITY_THRESHOLD = 100;
@@ -49,12 +57,21 @@ public class MazeView extends SurfaceView implements SurfaceHolder.Callback, Vie
                     public void close() throws SecurityException {
 
                     }
-                }, getThis().getRootView()));
+                }, getThis().getRootView(), getRandomMaze()));
                 getThread().start();
             }
         });
     }
 
+    public void randomize() {
+        this.thread.getMazeState().getPlayer().setDirection("null");
+        this.thread.setMazeState(new MazeState(getThis().getRootView(), getContext(), getRandomMaze()));
+    }
+
+    public void reset() {
+        this.thread.getMazeState().getPlayer().setDirection("null");
+        this.thread.setMazeState(new MazeState(getThis().getRootView(), getContext(), this.thread.getMazeState().getMaze()));
+    }
 
 
     public MazeView getThis() {
@@ -69,21 +86,23 @@ public class MazeView extends SurfaceView implements SurfaceHolder.Callback, Vie
         this.thread = thread;
     }
 
-    @Override
-    public void onClick(View v) {
-//        if (v.getId() == R.id.startBtn) {
-//            this.thread.getPongState().start();
-//        }
-//        if (v.getId() == R.id.resetBtn) {
-//            this.thread.getPongState().reset();
-//            ((Activity) this.context).runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    ((TextView) ((Activity) context).findViewById(R.id.player1Score)).setText(Integer.toString(0));
-//                    ((TextView) ((Activity) context).findViewById(R.id.player2Score)).setText(Integer.toString(0));
-//                }
-//            });
-//        }
+    public Bitmap getRandomMaze() {
+        int[] mazesToPick = this.mazes;
+        if (this.currentMaze != 0) {
+            int[] newMaze = new int[this.mazes.length - 1];
+            int count = 0;
+            for (int i = 0; i < this.mazes.length; i++)
+                if (this.mazes[i] != this.currentMaze) {
+                    newMaze[count] = this.mazes[i];
+                    count++;
+                }
+            mazesToPick = newMaze;
+        }
+        int mazeID = mazesToPick[((int) (Math.random() * mazesToPick.length))];
+        this.currentMaze = mazeID;
+        System.out.println("New Maze: " + mazeID);
+        Bitmap maze = BitmapFactory.decodeResource(this.context.getResources(), mazeID);
+        return Bitmap.createScaledBitmap(maze, this.getWidth(), this.getHeight(), false);
     }
 
     @Override

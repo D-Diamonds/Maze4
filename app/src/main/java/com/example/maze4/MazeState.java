@@ -1,5 +1,6 @@
 package com.example.maze4;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 public class MazeState {
 
@@ -17,20 +19,19 @@ public class MazeState {
     private Context context;
     private Bitmap maze;
     private Ball player;
-
-    private static final int SWIPE_MIN_DISTANCE = 120;
-    private static final int SWIPE_MAX_OFF_PATH = 250;
-    private static final int SWIPE_THRESHOLD_VELOCITY = 200;
+    private int time;
+    private boolean foundGoal;
 
 
-    public MazeState(View view, Context context) {
+    public MazeState(View view, Context context, Bitmap maze) {
         this.view = view;
         this.context = context;
         this.screenWidth = view.findViewById(R.id.mazeView).getWidth();
         this.screenHeight = view.findViewById(R.id.mazeView).getHeight();
-        this.maze = BitmapFactory.decodeResource(this.context.getResources(), R.drawable.maze1);
-        this.maze = Bitmap.createScaledBitmap(maze, this.screenWidth, this.screenHeight, false);
+        this.maze = maze;
         this.player = new Ball(this.screenWidth, this.screenHeight);
+        this.time = 0;
+        this.foundGoal = false;
 
         // Initializes ball to wherever the green box is
         boolean foundStart = false;
@@ -68,28 +69,66 @@ public class MazeState {
         return this.player;
     }
 
+    public Bitmap getMaze() {
+        return this.maze;
+    }
+
     public void win() {
         System.out.println("WIN!");
+        this.foundGoal = true;
+        updateTime(this.time/ 100, this.foundGoal);
+        this.player.setDirection("null");
+
+    }
+
+    public void updateTime(final int currentTime, final boolean foundGoal) {
+        ((Activity) this.context).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!foundGoal)
+                    ((TextView) ((Activity) context).findViewById(R.id.timer)).setText("Time: " + currentTime);
+                else
+                    ((TextView) ((Activity) context).findViewById(R.id.timer)).setText("You won in " + currentTime + " seconds!");
+            }
+        });
     }
 
     public void update(float dt) {
         this.player.update(dt);
-        if (this.player.getX() < 0)
-            this.player.setPosition(2 * this.player.getRadius(), this.player.getY());
-        if (this.player.getX() > this.screenWidth)
-            this.player.setPosition(this.screenWidth - 2 * this.player.getRadius(), this.player.getY());
-        if (this.player.getY() < 0)
-            this.player.setPosition(this.player.getX(), 2 * this.player.getRadius());
-        if (this.player.getY() > this.screenHeight)
-            this.player.setPosition(this.player.getX(), this.screenHeight - 2 * this.player.getRadius());
+        if (!foundGoal) {
+            this.time += dt;
+            updateTime(this.time / 100, this.foundGoal);
+        }
+        //System.out.println(this.time);
+
+
+        // ensure player stays in view
+        if (this.player.getX() < 0) {
+            this.player.setPosition(this.player.getRadius() + 2, this.player.getY());
+            this.player.setDirection("right");
+        }
+        else if (this.player.getX() > this.screenWidth) {
+            this.player.setPosition(this.screenWidth - this.player.getRadius() - 2, this.player.getY());
+            this.player.setDirection("left");
+        }
+        else if (this.player.getY() < 0) {
+            this.player.setPosition(this.player.getX(), this.player.getRadius() + 2);
+            this.player.setDirection("down");
+        }
+        else if (this.player.getY() > this.screenHeight) {
+            this.player.setPosition(this.player.getX(), this.screenHeight - this.player.getRadius() - 2);
+            this.player.setDirection("up");
+        }
 
         // collision detection
-        if (this.player.getX() > 0 && this.player.getX() < this.screenWidth && this.player.getY() > 0 && this.player.getY() < this.screenHeight) {
+        if (this.player.getX() - this.player.getRadius() > 0 && this.player.getX() + this.player.getRadius() < this.screenWidth && this.player.getY() - this.player.getRadius() > 0 && this.player.getY() + this.player.getRadius() < this.screenHeight) {
             if (this.player.getDirection().equals("right")) {
                 int pixel = this.maze.getPixel((int) (this.player.getX() + this.player.getRadius()), (int) this.player.getY());
                 // with wall
-                if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
-                    this.player.setPosition(this.player.getX() - this.player.getRadius(), this.player.getY());
+                if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0) {
+                    this.player.setPosition(this.player.getX() - 2, this.player.getY());
+                    this.player.setDirection("left");
+                }
                 // with goal
                 if (Color.red(pixel) == 255 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
                     win();
@@ -97,24 +136,30 @@ public class MazeState {
             } else if (this.player.getDirection().equals("left")) {
                 int pixel = this.maze.getPixel((int) (this.player.getX() - this.player.getRadius()), (int) this.player.getY());
                 // with wall
-                if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
-                    this.player.setPosition(this.player.getX() + this.player.getRadius(), this.player.getY());
+                if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0) {
+                    this.player.setPosition(this.player.getX() + 2, this.player.getY());
+                    this.player.setDirection("right");
+                }
                 // with goal
                 if (Color.red(pixel) == 255 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
                     win();
             } else if (this.player.getDirection().equals("up")) {
-                int pixel = this.maze.getPixel((int) this.player.getX(), (int) (this.player.getY() + this.player.getRadius()));
+                int pixel = this.maze.getPixel((int) this.player.getX(), (int) (this.player.getY() - this.player.getRadius()));
                 // with wall
-                if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
-                    this.player.setPosition(this.player.getX(), this.player.getY() - this.player.getRadius());
+                if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0) {
+                    this.player.setPosition(this.player.getX(), this.player.getY() + 2);
+                    this.player.setDirection("down");
+                }
                 // with goal
                 if (Color.red(pixel) == 255 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
                     win();
             } else if (this.player.getDirection().equals("down")) {
-                int pixel = this.maze.getPixel((int) this.player.getX(), (int) (this.player.getY() - +this.player.getRadius()));
+                int pixel = this.maze.getPixel((int) this.player.getX(), (int) (this.player.getY() + this.player.getRadius()));
                 // with wall
-                if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
-                    this.player.setPosition(this.player.getX(), this.player.getY() + this.player.getRadius());
+                if (Color.red(pixel) == 0 && Color.green(pixel) == 0 && Color.blue(pixel) == 0) {
+                    this.player.setPosition(this.player.getX(), this.player.getY() - 2);
+                    this.player.setDirection("up");
+                }
                 // with goal
                 if (Color.red(pixel) == 255 && Color.green(pixel) == 0 && Color.blue(pixel) == 0)
                     win();

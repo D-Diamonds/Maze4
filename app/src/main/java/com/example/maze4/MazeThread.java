@@ -1,6 +1,7 @@
 package com.example.maze4;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.view.SurfaceHolder;
@@ -17,15 +18,19 @@ public class MazeThread extends Thread {
     private float fps;
     private long lastTime;
 
-    public MazeThread(SurfaceHolder holder, Context context, Handler handler, View view) {
+    public MazeThread(SurfaceHolder holder, Context context, Handler handler, View view, Bitmap maze) {
         this.surfaceHolder = holder;
         this.paint = new Paint();
-        this.mazeState = new MazeState(view, context);
+        this.mazeState = new MazeState(view, context, maze);
         this.lastTime = System.nanoTime();
     }
 
     public MazeState getMazeState() {
         return this.mazeState;
+    }
+
+    public void setMazeState(MazeState mazeState) {
+        this.mazeState = mazeState;
     }
 
     @Override
